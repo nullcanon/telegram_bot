@@ -87,10 +87,14 @@ def buildMessage(input):
     symbol = input['token_symbol']
 
     # 买入
-    buy_tax = '%.2f'%(float(input['buy_tax']) * 100)
+    buy_tax = "未知"
+    if "buy_tax" in input:
+        buy_tax = '%.2f'%(float(input['buy_tax']) * 100)
 
     # 卖出
-    sell_tax = '%.2f'%(float(input['sell_tax']) * 100)
+    sell_tax = "未知"
+    if "sell_tax" in input:
+        sell_tax = '%.2f'%(float(input['sell_tax']) * 100)
 
     # 持有人数
     holder = input['holder_count']
@@ -106,11 +110,13 @@ def buildMessage(input):
         transfer_pausable = "⚠️有"
 
     #滑点更改
-    slippage_modifiable = input["slippage_modifiable"]
-    if slippage_modifiable == "0" :
-        slippage_modifiable = "🟢否"
-    else:
-        slippage_modifiable = "⚠️可"
+    slippage_modifiable = "未知"
+    if "slippage_modifiable" in input:
+        slippage_modifiable = input["slippage_modifiable"]
+        if slippage_modifiable == "0" :
+            slippage_modifiable = "🟢否"
+        else:
+            slippage_modifiable = "⚠️可"
 
     #所有者
     owner = input["owner_address"]
@@ -118,68 +124,86 @@ def buildMessage(input):
         owner = "🟢权限已丢弃"
 
     #隐藏权限
-    hidden_owner = input["hidden_owner"]
-    if hidden_owner == "0" :
-        hidden_owner = "🟢无"
-    else:
-        hidden_owner = "⚠️有"
+    hidden_owner = "未知"
+    if "hidden_owner" in input:
+        hidden_owner = input["hidden_owner"]
+        if hidden_owner == "0" :
+            hidden_owner = "🟢无"
+        else:
+            hidden_owner = "⚠️有"
 
 
     #外部调用
-    external_call = input["external_call"]
-    if external_call == "0":
-        external_call = "🟢无"
-    else:
-        external_call = "⚠️有"
+    external_call = "未知"
+    if "external_call" in input:
+        external_call = input["external_call"]
+        if external_call == "0":
+            external_call = "🟢无"
+        else:
+            external_call = "⚠️有"
 
     #允许购买
-    cannot_buy = input["cannot_buy"]
-    if cannot_buy == "0":
-        cannot_buy = "🟢可"
-    else:
-        cannot_buy = "⚠️否"
+    cannot_buy = "未知"
+    if "cannot_buy" in input:
+        cannot_buy = input["cannot_buy"]
+        if cannot_buy == "0":
+            cannot_buy = "🟢可"
+        else:
+            cannot_buy = "⚠️否"
 
     #允许出售
-    cannot_sell_all = input["cannot_sell_all"]
-    if cannot_sell_all == "0":
-        cannot_sell_all = "🟢可"
-    else:
-        cannot_sell_all = "⚠️否"
+    cannot_sell_all = "未知"
+    if "cannot_sell_all" in input:
+        cannot_sell_all = input["cannot_sell_all"]
+        if cannot_sell_all == "0":
+            cannot_sell_all = "🟢可"
+        else:
+            cannot_sell_all = "⚠️否"
     
     #代理合约
-    is_proxy = input["is_proxy"]
-    if is_proxy == "0":
-        is_proxy = "🟢否"
-    else:
-        is_proxy = "⚠️是"
+    is_proxy = "未知"
+    if "is_proxy" in input:
+        is_proxy =  input["is_proxy"]
+        if is_proxy == "0":
+            is_proxy = "🟢否"
+        else:
+            is_proxy = "⚠️是"
 
     #蜜獾
-    is_honeypot = input["is_honeypot"]
-    if is_honeypot == "0":
-        is_honeypot = "🟢否"
-    else:
-        is_honeypot = "❗️是"
+    is_honeypot = "未知"
+    if "is_honeypot" in input:
+        is_honeypot = input["is_honeypot"]
+        if is_honeypot == "0":
+            is_honeypot = "🟢否"
+        else:
+            is_honeypot = "❗️是"
 
     #可增发
-    is_mintable = input["is_mintable"]
-    if is_mintable == "0":
-        is_mintable = "🟢否"
-    else:
-        is_mintable = "⚠️可"
+    is_mintable = "未知"
+    if "is_mintable" in input:
+        is_mintable = input["is_mintable"]
+        if is_mintable == "0":
+            is_mintable = "🟢否"
+        else:
+            is_mintable = "⚠️可"
 
     #白名单
-    is_whitelisted = input["is_whitelisted"]
-    if is_whitelisted == "0":
-        is_whitelisted = "🟢无"
-    else:
-        is_whitelisted = "⚠️有"
+    is_whitelisted = "未知"
+    if "is_whitelisted" in input:
+        is_whitelisted = input["is_whitelisted"]
+        if is_whitelisted == "0":
+            is_whitelisted = "🟢无"
+        else:
+            is_whitelisted = "⚠️有"
 
     #黑名单
-    is_blacklisted = input["is_blacklisted"]
-    if is_blacklisted == "0":
-        is_blacklisted = "🟢无"
-    else:
-        is_blacklisted = "⚠️有"
+    is_blacklisted = "未知"
+    if "is_blacklisted" in input:
+        is_blacklisted = input["is_blacklisted"]
+        if is_blacklisted == "0":
+            is_blacklisted = "🟢无"
+        else:
+            is_blacklisted = "⚠️有"
 
     #最大池子
     dexs = input["dex"]
