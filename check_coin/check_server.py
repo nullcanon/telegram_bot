@@ -33,12 +33,22 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def getTokenInfo(token):
-        params = {'api-key':'',
-           'api-secrect:':''}
+def loadConfig():
+    with open("./config.json","r") as f:
+        load_dict = json.load(f)
+    return load_dict
+
+config = loadConfig()
+GOAPIKEY = config['go_plus_api_key']
+GOAPISECRECT = config['go_plus_api_secrect']
+BOTAPIKEY =  config['bot_api_key']
+
+def getTokenInfo(token, apikey = GOAPIKEY, apisecrect = GOAPISECRECT):
+        params = {'api-key': apikey,
+           'api-secrect:': apisecrect}
         params["contract_addresses"] = token
         result = httpx.get('https://api.gopluslabs.io/api/v1/token_security/56', params = params)
-        return json.load(result.text)
+        return json.loads(result.text)
 
         # with open("./example.json", 'r') as f:
         #     temp = json.loads(f.read())
@@ -260,10 +270,14 @@ def help_command(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(HELP_TEXT)
 
 
-def echo(update: Update, context: CallbackContext) -> None:
+def auto_check_token(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-    tokenInfo = getTokenInfo(update.message.text)
-    update.message.reply_markdown(tokenInfo)
+    address = getAddress(update.message.text)
+    if address == "":
+        return
+    tokenInfo = getTokenInfo(address)
+    reply_message = buildMessage(tokenInfo['result'][address.lower()])
+    update.message.reply_markdown(reply_message)
 
 
 def check(update: Update, context: CallbackContext) -> None:
@@ -279,7 +293,7 @@ def check(update: Update, context: CallbackContext) -> None:
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater(token=":", request_kwargs={'proxy_url': 'http://192.168.1.34:1080/'})
+    updater = Updater(token=BOTAPIKEY, request_kwargs={'proxy_url': 'http://192.168.1.34:1080/'})
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
@@ -287,10 +301,10 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
-    dispatcher.add_handler(CommandHandler("bee_check", check))
+    dispatcher.add_handler(CommandHandler("bee_check", auto_check_token))
 
     # on non command i.e message - echo the message on Telegram
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, auto_check_token))
 
     # Start the Bot
     updater.start_polling()
