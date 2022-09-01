@@ -103,11 +103,13 @@ def buildMessage(input):
     supply = '%.2f'%(float(input['total_supply']))
 
     #转账开关
-    transfer_pausable = input["transfer_pausable"]
-    if transfer_pausable == "0" :
-        transfer_pausable = "🟢无"
-    else:
-        transfer_pausable = "⚠️有"
+    transfer_pausable = "未知"
+    if "transfer_pausable" in input:
+        transfer_pausable = input["transfer_pausable"]
+        if transfer_pausable == "0" :
+            transfer_pausable = "🟢无"
+        else:
+            transfer_pausable = "⚠️有"
 
     #滑点更改
     slippage_modifiable = "未知"
