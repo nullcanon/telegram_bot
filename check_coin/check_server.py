@@ -96,7 +96,7 @@ def buildMessage(input):
     if "sell_tax" in input:
         sell_tax = '%.2f'%(float(input['sell_tax']) * 100)
         if sell_tax >= 100:
-            sell_tax = "❗️100.00"
+            sell_tax = "❗️100"
     
 
     # 持有人数
@@ -125,7 +125,7 @@ def buildMessage(input):
 
     #所有者
     owner = input["owner_address"]
-    if owner == "0x0000000000000000000000000000000000000000":
+    if owner == "0x0000000000000000000000000000000000000000" or owner.lower() == "0x000000000000000000000000000000000000dead":
         owner = "🟢权限已丢弃"
 
     #隐藏权限
@@ -292,7 +292,8 @@ def help_command(update: Update, context: CallbackContext) -> None:
     HELP_TEXT = (
         """
         蜜蜂查币由 [BEECapital](https://beecapital.org/) 开发，目前只支持中文版本、BSC链查询 
-        - /bee_check <代币合约地址>
+        - /bee_check  <代币合约地址>
+        - /approve_check  <钱包地址>
         """
     )
     """Send a message when the command /help is issued."""
@@ -310,7 +311,6 @@ def auto_check_token(update: Update, context: CallbackContext) -> None:
 
 
 def check(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
     address = getAddress(update.message.text)
     if address == "":
         return
@@ -318,6 +318,8 @@ def check(update: Update, context: CallbackContext) -> None:
     reply_message = buildMessage(tokenInfo['result'][address.lower()])
     update.message.reply_markdown( reply_message)
 
+def approve_check() -> None:
+    pass
 
 def main() -> None:
     """Start the bot."""
@@ -331,6 +333,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("bee_check", auto_check_token))
+    dispatcher.add_handler(CommandHandler("approve_check", approve_check))
 
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, auto_check_token))
