@@ -74,7 +74,7 @@ def buildMessage(input):
 *转账开关：*{}     *滑点更改：*{}\n\
 *隐藏权限：*{}     *外部调用：*{}\n\
 *允许购买：*{}     *允许出售：*{}\n\
-*代理合约：*{}     *蜜        獾： *{}\n\
+*代理合约：*{}     *蜜        罐： *{}\n\
 *白名单：    *{}     *黑名单：     *{}\n\
 *最大池子：*{}\n\
 *所有者：*{}\n\
@@ -95,6 +95,9 @@ def buildMessage(input):
     sell_tax = "未知"
     if "sell_tax" in input:
         sell_tax = '%.2f'%(float(input['sell_tax']) * 100)
+        if sell_tax >= 100:
+            sell_tax = "❗️100.00"
+    
 
     # 持有人数
     holder = input['holder_count']
