@@ -21,7 +21,7 @@ from web3 import Web3
 import json
 from decimal import Decimal
 import httpx
-from telegram import Update, ForceReply
+from telegram import Update, ForceReply, InlineKeyboardMarkup, InlineKeyboardButton, ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from telegram.utils.helpers import escape_markdown
 
@@ -44,15 +44,15 @@ GOAPISECRECT = config['go_plus_api_secrect']
 BOTAPIKEY =  config['bot_api_key']
 
 def getTokenInfo(token, apikey = GOAPIKEY, apisecrect = GOAPISECRECT):
-        params = {'api-key': apikey,
-           'api-secrect:': apisecrect}
-        params["contract_addresses"] = token
-        result = httpx.get('https://api.gopluslabs.io/api/v1/token_security/56', params = params)
-        return json.loads(result.text)
+        # params = {'api-key': apikey,
+        #    'api-secrect:': apisecrect}
+        # params["contract_addresses"] = token
+        # result = httpx.get('https://api.gopluslabs.io/api/v1/token_security/56', params = params)
+        # return json.loads(result.text)
 
-        # with open("./example.json", 'r') as f:
-        #     temp = json.loads(f.read())
-        # return temp
+        with open("./example.json", 'r') as f:
+            temp = json.loads(f.read())
+        return temp
 
 def getAddress(text):
     index = text.find('0')
@@ -64,27 +64,66 @@ def getAddress(text):
     return address
 
     
-def buildMessage(input):
+def buildMessage(address, input):
     message = \
-"*{}（{}）*\n\
-*总发行量：*{}\n\
-*持有人数：* {}\n\
-*可增发：*{}\n\
-*买入滑点：*{}%    *卖出滑点：* {}%\n\
-*转账开关：*{}     *滑点更改：*{}\n\
-*隐藏权限：*{}     *外部调用：*{}\n\
-*允许购买：*{}     *允许出售：*{}\n\
-*代理合约：*{}     *蜜        罐： *{}\n\
-*白名单：    *{}     *黑名单：     *{}\n\
-*最大池子：*{}\n\
-*所有者：*{}\n\
-*代币持仓：*{}\n\
-*LP持仓：*{}\n\
+"🔆[BEECapital](https://beecapital.org/) `开发维护，欢迎使用！`\n\
+*{}（{}）*\n\
+1️⃣ *代币信息*\n\
+合约：[{}]({})\n\
+发行总量：{}\n\
+流通总量：{}\n\
+\n2️⃣ *交易状态*\n\
+能否卖出：{}\n\
+买入：{}%     卖出：{}%\n\
+\n3️⃣ *代码信息*\n\
+是否开源：{}\n\
+合约所有权：{}\n\
+隐藏权限：{}\n\
+调节税率：{}\n\
+余额修改：{}\n\
+暂停交易：{}\n\
+\n4️⃣ *相关数据*\n\
+持仓人数：{}\n\
+`以上数据仅供参考，不作为投资建议！`\
+"
+
+    message2 = \
+"🔆[BEECapital](https://beecapital.org/) `开发维护，欢迎使用！`\n\
+*{}（{}）*\n\
+1️⃣ *代币信息*\n\
+链/ID：BSC/56\n\
+合约：[{}]({})\n\
+创建者：{}\n\
+发行总量：{}\n\
+流通总量：{}\n\
+\n2️⃣ *交易状态*\n\
+上线的DEX：{}\n\
+能否卖出：{}\n\
+买入：{}%     卖出：{}%\n\
+\n3️⃣ *代码信息*\n\
+是否开源：{}\n\
+合约所有权：{}\n\
+代理合约：{}\n\
+隐藏权限：{}\n\
+调节税率：{}\n\
+余额修改：{}\n\
+暂停交易：{}\n\
+白名单：{}\n\
+黑名单：{}\n\
+\n4️⃣ *相关数据*\n\
+持仓人数：{}\n\
+流动性池：已锁定{}\n\
+锁仓数据：{}\n\
+`以上数据仅供参考，不作为投资建议！`\
 "
 
     # 名称
     name = input['token_name']
     symbol = input['token_symbol']
+
+    # 合约
+    contract = "0x...." + address[-6:]
+    url = "https://bscscan.com/token/" + address.lower() + "#tokenInfo"
 
     # 买入
     buy_tax = "未知"
@@ -95,7 +134,7 @@ def buildMessage(input):
     sell_tax = "未知"
     if "sell_tax" in input:
         sell_tax = '%.2f'%(float(input['sell_tax']) * 100)
-        if sell_tax >= 100:
+        if float(sell_tax) >= 100:
             sell_tax = "❗️100"
     
 
@@ -105,37 +144,40 @@ def buildMessage(input):
     # 总发行量
     supply = '%.2f'%(float(input['total_supply']))
 
-    #转账开关
+    #转账开关/调节税率
     transfer_pausable = "未知"
     if "transfer_pausable" in input:
         transfer_pausable = input["transfer_pausable"]
         if transfer_pausable == "0" :
-            transfer_pausable = "🟢无"
+            transfer_pausable = "🟢不能"
         else:
-            transfer_pausable = "⚠️有"
+            transfer_pausable = "⚠️可以"
 
     #滑点更改
     slippage_modifiable = "未知"
     if "slippage_modifiable" in input:
         slippage_modifiable = input["slippage_modifiable"]
         if slippage_modifiable == "0" :
-            slippage_modifiable = "🟢否"
+            slippage_modifiable = "🟢不能"
         else:
-            slippage_modifiable = "⚠️可"
+            slippage_modifiable = "⚠️可以"
 
     #所有者
     owner = input["owner_address"]
     if owner == "0x0000000000000000000000000000000000000000" or owner.lower() == "0x000000000000000000000000000000000000dead":
-        owner = "🟢权限已丢弃"
+        owner = "🟢已放弃"
+    else:
+        owner = "⚠️未放弃"
+
 
     #隐藏权限
     hidden_owner = "未知"
     if "hidden_owner" in input:
         hidden_owner = input["hidden_owner"]
         if hidden_owner == "0" :
-            hidden_owner = "🟢无"
+            hidden_owner = "🟢不能"
         else:
-            hidden_owner = "⚠️有"
+            hidden_owner = "⚠️可以"
 
 
     #外部调用
@@ -161,9 +203,9 @@ def buildMessage(input):
     if "cannot_sell_all" in input:
         cannot_sell_all = input["cannot_sell_all"]
         if cannot_sell_all == "0":
-            cannot_sell_all = "🟢可"
+            cannot_sell_all = "🟢"
         else:
-            cannot_sell_all = "⚠️否"
+            cannot_sell_all = "🔴"
     
     #代理合约
     is_proxy = "未知"
@@ -188,9 +230,9 @@ def buildMessage(input):
     if "is_mintable" in input:
         is_mintable = input["is_mintable"]
         if is_mintable == "0":
-            is_mintable = "🟢否"
+            is_mintable = "🟢不能"
         else:
-            is_mintable = "⚠️可"
+            is_mintable = "⚠️可以"
 
     #白名单
     is_whitelisted = "未知"
@@ -212,67 +254,88 @@ def buildMessage(input):
 
     #最大池子
     dexs = input["dex"]
-    max_dex = "⚠️无"
-    max_liquidity = 0
-    pair = ""
+    max_dex = ""
+    up_dex = {}
     for pool in dexs:
-        if float(pool["liquidity"]) > max_liquidity:
-            max_dex = pool["name"]
-            pair = pool["pair"].lower()
-            max_liquidity = float(pool["liquidity"])
+        up_dex[pool["name"]] = 1
+    for key in up_dex.keys():
+        if max_dex == "":
+            max_dex = key
+        else:
+            max_dex = max_dex + "/" + key
+    
+
 
 
     #代币持仓
     holders = input["holders"]
-    token_lock = "\n销毁占比：{}\n池子占比：{}\n{}"
     destroy = "无"
     pool_amount = "无"
     lock = ""
+    not_flow_amount = 0
     for info in holders:
         if info["is_locked"] == 1 and info["address"] == "0x000000000000000000000000000000000000dead":
             t = float(info["balance"]) / float(supply) * 100
             destroy = '%.2f'%t + "%"
+            not_flow_amount = not_flow_amount + float(info["balance"])
             
         if info["is_locked"] == 1 and "locked_detail" in info:
             lock = info["tag"] + "："
+            index = 1
             for locked_detail in info["locked_detail"]:
-                lock  = lock + "(\n锁定数量：" + '%.2f'%float(locked_detail["amount"]) \
-                + ",\n开始时间：" + locked_detail["opt_time"] \
-                + ",\n结束时间：" + locked_detail["end_time"] + "  )"
-        if info["is_contract"] == 1 and info["address"].lower() == pair:
-            t = float(info["balance"]) / float(supply) * 100
-            pool_amount = '%.2f'%t + "%"\
-                + " (" + info["tag"] + ")"
+                lock  = lock + "\n" + str(index) + "锁定数量：" + '%.2f'%float(locked_detail["amount"]) \
+                + ",\n结束时间：" + locked_detail["end_time"]
+                not_flow_amount = not_flow_amount + float(locked_detail["amount"])
+                index = index + 1
 
-    token_lock = token_lock.format(destroy, pool_amount, lock)
+        # if info["is_contract"] == 1 and info["address"].lower() == pair:
+        #     t = float(info["balance"]) / float(supply) * 100
+        #     pool_amount = '%.2f'%t + "%"\
+        #         + " (" + info["tag"] + ")"
+
 
 
 
     #池子持仓
     lp_total_supply = input["lp_total_supply"]
     lp_holders = input["lp_holders"]
-    lp_lock = "\n销毁占比：{}\n{}"
     destroy = "无"
-    lock = ""
+    locked_amount = 0
     for info in lp_holders:
         if info["is_locked"] == 1 and info["address"] == "0x000000000000000000000000000000000000dead":
             t = float(info["balance"]) / float(lp_total_supply) * 100
             destroy = '%.2f'%t + "%"
 
         if info["is_locked"] == 1 and "locked_detail" in info:
-            lock = info["tag"] + "："
             for locked_detail in info["locked_detail"]:
-                lock  = lock + "(\n锁定数量：" + locked_detail["amount"] \
-                + ",\n开始时间：" + locked_detail["opt_time"] \
-                + ",\n结束时间：" + locked_detail["end_time"] + "  )"
+                locked_amount = locked_amount + float(locked_detail["amount"])
+    t = locked_amount/float(lp_total_supply) * 100
+    locked_amount = '%.2f'%t + "%"
 
-    lp_lock = lp_lock.format(destroy, lock)
 
-    message = message.format(name, symbol, supply,  holder,is_mintable, buy_tax, 
-        sell_tax, transfer_pausable, slippage_modifiable, hidden_owner,external_call,
-        cannot_buy, cannot_sell_all, is_proxy, is_honeypot, is_whitelisted, is_blacklisted,
-        max_dex, owner, token_lock, lp_lock)
-    return message
+    # lp_lock = lp_lock.format(destroy, lock)
+
+    #流通总量
+    flow_amount = float(supply) - not_flow_amount
+    flow_amount = '%.2f'%flow_amount
+
+    is_open_source = input["is_open_source"]
+    if is_open_source == "0":
+        is_open_source = "🔴"
+    else:
+        is_open_source = "🟢"
+
+    creator_address = input["creator_address"]
+
+    message_in_simple = message.format(name, symbol, contract, url, supply, flow_amount, cannot_sell_all, buy_tax, 
+        sell_tax, is_open_source, owner, hidden_owner,
+        slippage_modifiable, is_mintable, transfer_pausable, holder)
+
+    message_in_detail = message.format(name, symbol, contract, url,creator_address,  supply, flow_amount, max_dex, 
+        cannot_sell_all, buy_tax, sell_tax, is_open_source, owner, is_proxy, hidden_owner,
+        slippage_modifiable, is_mintable, transfer_pausable, is_whitelisted, is_blacklisted,
+        holder, locked_amount, lock)
+    return message_in_simple, message_in_detail
 
 
 
@@ -306,8 +369,11 @@ def auto_check_token(update: Update, context: CallbackContext) -> None:
     if address == "":
         return
     tokenInfo = getTokenInfo(address)
-    reply_message = buildMessage(tokenInfo['result'][address.lower()])
-    update.message.reply_markdown(reply_message)
+    reply_message, reply_message2 = buildMessage(address, tokenInfo['result'][address.lower()])
+    update.message.reply_markdown(reply_message, disable_web_page_preview=True, reply_markup = InlineKeyboardMarkup([[ \
+                                  InlineKeyboardButton('查看此代币更多信息', \
+                                                       url = 'https://t.me/bee_check_details')]]))
+    context.bot.send_message(chat_id = -1001738476717, text = reply_message2, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
 
 
 def check(update: Update, context: CallbackContext) -> None:
@@ -315,8 +381,8 @@ def check(update: Update, context: CallbackContext) -> None:
     if address == "":
         return
     tokenInfo = getTokenInfo(address)
-    reply_message = buildMessage(tokenInfo['result'][address.lower()])
-    update.message.reply_markdown( reply_message)
+    reply_message = buildMessage(address, tokenInfo['result'][address.lower()])
+    update.message.reply_markdown(reply_message, disable_web_page_preview=True)
 
 def approve_check() -> None:
     pass

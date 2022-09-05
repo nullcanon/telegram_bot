@@ -1,0 +1,202 @@
+{
+    "code": 2,
+    "message": "partial data obtained",
+    "result": [
+        {
+            "token_address": "0x9766d587133b50374ce402b1fdd10cce15caeeb0",
+            "chain_id": "56",
+            "token_name": "CryptoNFT",
+            "token_symbol": "$CNFT",
+            "decimals": 18,
+            "balance": "562381.139692158585106868",
+            "is_open_source": 1,
+            "malicious_address": 0,
+            "approved_list": [
+                {
+                    "approved_contract": "0x10ed43c718714eb63d5aa57b78b54704e256024e",
+                    "approved_amount": "Unlimited",
+                    "approved_time": 1645689910,
+                    "hash": "0x24559c180ece9e558d30a144f8ca732b6e4be4863a71289477707db8d800273c",
+                    "address_info": {
+                        "contract_name": null,
+                        "tag": "Pancakeswap",
+                        "creator_address": null,
+                        "is_contract": -1,
+                        "doubt_list": 0,
+                        "deployed_time": null,
+                        "trust_list": 1,
+                        "is_open_source": -1
+                    }
+                }
+            ]
+        },
+        {
+            "token_address": "0xba18bf5f77bd470b9a1b64d35d2514d8771c3ee9",
+            "chain_id": "56",
+            "token_name": "MetaSwap",
+            "token_symbol": "MSC",
+            "decimals": 18,
+            "balance": "99998.200526963109803294",
+            "is_open_source": 0,
+            "malicious_address": 0,
+            "approved_list": [
+                {
+                    "approved_contract": "0x10ed43c718714eb63d5aa57b78b54704e256024e",
+                    "approved_amount": "Unlimited",
+                    "approved_time": 1644392743,
+                    "hash": "0x498fdb018a0ea7bb6af1ce5f8dd36cfd2d045fa71537044fd8ab77c7b83bdbee",
+                    "address_info": {
+                        "contract_name": null,
+                        "tag": "Pancakeswap",
+                        "creator_address": null,
+                        "is_contract": -1,
+                        "doubt_list": 0,
+                        "deployed_time": null,
+                        "trust_list": 1,
+                        "is_open_source": -1
+                    }
+                }
+            ]
+        },
+        {
+            "token_address": "0x55d398326f99059ff775485246999027b3197955",
+            "chain_id": "56",
+            "token_name": "Tether USD",
+            "token_symbol": "USDT",
+            "decimals": 18,
+            "balance": "239.341883280962535828",
+            "is_open_source": 1,
+            "malicious_address": 0,
+            "approved_list": [
+                {
+                    "approved_contract": "0x10ed43c718714eb63d5aa57b78b54704e256024e",
+                    "approved_amount": "Unlimited",
+                    "approved_time": 1645320018,
+                    "hash": "0x6eba54f4633dccbd64054d6c4f174a4200fe6d76efa9849e7b0be72133e2f293",
+                    "address_info": {
+                        "contract_name": null,
+                        "tag": "Pancakeswap",
+                        "creator_address": null,
+                        "is_contract": -1,
+                        "doubt_list": 0,
+                        "deployed_time": null,
+                        "trust_list": 1,
+                        "is_open_source": -1
+                    }
+                }
+            ]
+        },
+        {
+            "token_address": "0xe070cca5cdfb3f2b434fb91eaf67fa2084f324d7",
+            "chain_id": "56",
+            "token_name": "BEE Capital",
+            "token_symbol": "BEE",
+            "decimals": 18,
+            "balance": "7574.83910116734480349",
+            "is_open_source": 1,
+            "malicious_address": 0,
+            "approved_list": [
+                {
+                    "approved_contract": "0x10ed43c718714eb63d5aa57b78b54704e256024e",
+                    "approved_amount": "Unlimited",
+                    "approved_time": 1655851609,
+                    "hash": "0x48c6f747c255d7e4335afaf3ac1fc0461ef9abe1ee4c249d12320032fff0f093",
+                    "address_info": {
+                        "contract_name": null,
+                        "tag": "Pancakeswap",
+                        "creator_address": null,
+                        "is_contract": -1,
+                        "doubt_list": 0,
+                        "deployed_time": null,
+                        "trust_list": 1,
+                        "is_open_source": -1
+                    }
+                }
+            ]
+        },
+        {
+            "token_address": "0x8ae9b2506c73fa7b89359a539efe5b67359a64c3",
+            "chain_id": "56",
+            "token_name": "MetaSwap_test",
+            "token_symbol": "MSC_test",
+            "decimals": 18,
+            "balance": "66582.240688761",
+            "is_open_source": 0,
+            "malicious_address": 0,
+            "approved_list": [
+                {
+                    "approved_contract": "0x552595e6b6a82b1b8d420d8f6b245165555b9fd4",
+                    "approved_amount": "36284.01460773",
+                    "approved_time": 1644529653,
+                    "hash": "0x52df387248c8bf3c407edc45c1140f4702806222eb296d4592913e7fee94bb23",
+                    "address_info": {
+                        "contract_name": null,
+                        "tag": null,
+                        "creator_address": null,
+                        "is_contract": -1,
+                        "doubt_list": 0,
+                        "deployed_time": null,
+                        "trust_list": 0,
+                        "is_open_source": -1
+                    }
+                }
+            ]
+        },
+        {
+            "token_address": "0xeacad6c99965cde0f31513dd72de79fa24610767",
+            "chain_id": "56",
+            "token_name": "MetaSwap",
+            "token_symbol": "MSC",
+            "decimals": 18,
+            "balance": "0",
+            "is_open_source": 1,
+            "malicious_address": 0,
+            "approved_list": [
+                {
+                    "approved_contract": "0x552595e6b6a82b1b8d420d8f6b245165555b9fd4",
+                    "approved_amount": "10",
+                    "approved_time": 1649044696,
+                    "hash": "0x6d1e1726ba2930c50d7a2d777c4a30f29c0b92dc1166b3af8cbac782bd220fa8",
+                    "address_info": {
+                        "contract_name": null,
+                        "tag": null,
+                        "creator_address": null,
+                        "is_contract": -1,
+                        "doubt_list": 0,
+                        "deployed_time": null,
+                        "trust_list": 0,
+                        "is_open_source": -1
+                    }
+                }
+            ]
+        },
+        {
+            "token_address": "0x9b49b580042355e9b1cc0a76445887343bdecb33",
+            "chain_id": "56",
+            "token_name": "SB3M",
+            "token_symbol": "SB3M",
+            "decimals": 18,
+            "balance": "0",
+            "is_open_source": 1,
+            "malicious_address": 0,
+            "approved_list": [
+                {
+                    "approved_contract": "0x10ed43c718714eb63d5aa57b78b54704e256024e",
+                    "approved_amount": "Unlimited",
+                    "approved_time": 1644737909,
+                    "hash": "0x4a03a539aff8b9e932a0df987e7057417b27e76a499809a17378d0abad4d64d8",
+                    "address_info": {
+                        "contract_name": null,
+                        "tag": "Pancakeswap",
+                        "creator_address": null,
+                        "is_contract": -1,
+                        "doubt_list": 0,
+                        "deployed_time": null,
+                        "trust_list": 1,
+                        "is_open_source": -1
+                    }
+                }
+            ]
+        }
+    ]
+}
