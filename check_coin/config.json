@@ -1,5 +1,7 @@
 {
-    "bot_api_key":"5617178152:AAHAks53SdEiEERAOAbTSGUFonD2mfSGzaw",
-    "go_plus_api_key":"dvFuUUKp0xTJBZp83tYV",
-    "go_plus_api_secrect":"VKBJXhc7lyrRo4qYymmwEtbqVR8Qu5Lp"
+    "bot_api_key":":",
+    "go_plus_api_key":"",
+    "go_plus_api_secrect":"",
+    "token_check_channel_id":2,
+    "token_check_channel_url":"https://t.me/bee_check_details"
 }
