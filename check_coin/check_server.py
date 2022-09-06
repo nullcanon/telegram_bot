@@ -42,6 +42,7 @@ config = loadConfig()
 GOAPIKEY = config['go_plus_api_key']
 GOAPISECRECT = config['go_plus_api_secrect']
 BOTAPIKEY =  config['bot_api_key']
+CHANNEL = config['token_check_channel_id']
 
 def getTokenInfo(token, apikey = GOAPIKEY, apisecrect = GOAPISECRECT):
         # params = {'api-key': apikey,
@@ -84,7 +85,7 @@ def buildMessage(address, input):
 暂停交易：{}\n\
 \n4️⃣ *相关数据*\n\
 持仓人数：{}\n\
-`以上数据仅供参考，不作为投资建议！`\
+\n`以上数据仅供参考，不作为投资建议！`\
 "
 
     message2 = \
@@ -93,7 +94,7 @@ def buildMessage(address, input):
 1️⃣ *代币信息*\n\
 链/ID：BSC/56\n\
 合约：[{}]({})\n\
-创建者：{}\n\
+创建者：[{}]({})\n\
 发行总量：{}\n\
 流通总量：{}\n\
 \n2️⃣ *交易状态*\n\
@@ -114,7 +115,7 @@ def buildMessage(address, input):
 持仓人数：{}\n\
 流动性池：已锁定{}\n\
 锁仓数据：{}\n\
-`以上数据仅供参考，不作为投资建议！`\
+\n`以上数据仅供参考，不作为投资建议！`\
 "
 
     # 名称
@@ -280,11 +281,11 @@ def buildMessage(address, input):
             not_flow_amount = not_flow_amount + float(info["balance"])
             
         if info["is_locked"] == 1 and "locked_detail" in info:
-            lock = info["tag"] + "："
+            lock = ""
             index = 1
             for locked_detail in info["locked_detail"]:
-                lock  = lock + "\n" + str(index) + "锁定数量：" + '%.2f'%float(locked_detail["amount"]) \
-                + ",\n结束时间：" + locked_detail["end_time"]
+                lock  = lock + "\n" + str(index) + "、锁定数量：" + '%.2f'%float(locked_detail["amount"]) \
+                + "\n       结束时间：" + locked_detail["end_time"]
                 not_flow_amount = not_flow_amount + float(locked_detail["amount"])
                 index = index + 1
 
@@ -326,12 +327,14 @@ def buildMessage(address, input):
         is_open_source = "🟢"
 
     creator_address = input["creator_address"]
+    creator_address_simple = "0x..." + creator_address[-6:]
+    creator_url = "https://bscscan.com/address/" + creator_address_simple.lower()
 
     message_in_simple = message.format(name, symbol, contract, url, supply, flow_amount, cannot_sell_all, buy_tax, 
         sell_tax, is_open_source, owner, hidden_owner,
         slippage_modifiable, is_mintable, transfer_pausable, holder)
 
-    message_in_detail = message.format(name, symbol, contract, url,creator_address,  supply, flow_amount, max_dex, 
+    message_in_detail = message2.format(name, symbol, contract, url,creator_address_simple, creator_url, supply, flow_amount, max_dex, 
         cannot_sell_all, buy_tax, sell_tax, is_open_source, owner, is_proxy, hidden_owner,
         slippage_modifiable, is_mintable, transfer_pausable, is_whitelisted, is_blacklisted,
         holder, locked_amount, lock)
@@ -373,7 +376,7 @@ def auto_check_token(update: Update, context: CallbackContext) -> None:
     update.message.reply_markdown(reply_message, disable_web_page_preview=True, reply_markup = InlineKeyboardMarkup([[ \
                                   InlineKeyboardButton('查看此代币更多信息', \
                                                        url = 'https://t.me/bee_check_details')]]))
-    context.bot.send_message(chat_id = -1001738476717, text = reply_message2, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    context.bot.send_message(chat_id = CHANNEL, text = reply_message2, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
 
 
 def check(update: Update, context: CallbackContext) -> None:
