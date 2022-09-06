@@ -384,8 +384,12 @@ def check(update: Update, context: CallbackContext) -> None:
     if address == "":
         return
     tokenInfo = getTokenInfo(address)
-    reply_message = buildMessage(address, tokenInfo['result'][address.lower()])
-    update.message.reply_markdown(reply_message, disable_web_page_preview=True)
+    reply_message, reply_message2 = buildMessage(address, tokenInfo['result'][address.lower()])
+    update.message.reply_markdown(reply_message, disable_web_page_preview=True, reply_markup = InlineKeyboardMarkup([[ \
+                                  InlineKeyboardButton('查看此代币更多信息', \
+                                                       url = 'https://t.me/bee_check_details')]]))
+    context.bot.send_message(chat_id = CHANNEL, text = reply_message2, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+
 
 def approve_check() -> None:
     pass
