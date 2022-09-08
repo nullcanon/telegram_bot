@@ -24,7 +24,7 @@ from telegram import Update, ForceReply, InlineKeyboardMarkup, InlineKeyboardBut
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from telegram.utils.helpers import escape_markdown
 import time
-import hashlib
+from web3 import Web3
 
 
 def loadConfig():
@@ -34,13 +34,12 @@ def loadConfig():
 
 config = loadConfig()
 BOTAPIKEY =  config['bot_api_key']
-CHANNEL = config['token_check_channel_id']
+CHANNEL = config['channel_id']
 KEY = config['information_key']
 
 
-def string_to_md5(string):
-    md5_val = hashlib.md5(string.encode('utf8')).hexdigest()
-    return md5_val
+def string_to_hash(string):
+    return Web3.keccak(string)
 
 # Enable logging
 logging.basicConfig(
@@ -61,10 +60,10 @@ def getMessages():
     datas = result_json['data']
     for data in datas:
         content = data['content']
-        md5 = string_to_md5(content)
-        if content_send[md5] not True:
+        hash_byte = string_to_hash(content)
+        if hash_byte in content_send.keys():
             messages.append(content)
-            content_send[string_to_md5(content)] = True
+            content_send[hash_byte] = int(time.time())
     # messages = ["【Optimism：以太坊合并时不会暂停网络，资产仅可提取到PoS链上】MarsBit消息，以太坊二层扩容网络 Optimism 在其社交平台表示，以太坊合并将不会对 Optimism 网络造成影响，不会暂停网络，存取款可照常进行。一旦合并触发，Optimism 的运营将完全转移到以太坊 PoS 链上，Optimism 上的资产也将只能提取到 PoS 链上。"]
     return messages
 
@@ -84,9 +83,18 @@ def main() -> None:
             for message in messages:
                 updater.bot.send_message(chat_id = CHANNEL, text = message, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
                 time.sleep(2)
-            time.sleep(60)
-        except:
+        except Exception as err:
+            logger.error(err)
             continue
+    
+        now = int(time.time())
+        for key, val in content_send.items():
+            if now - val > 86400:
+                content_send.pop(key)
+                
+        time.sleep(60)
+
+        
 
     # Start the Bot
     updater.start_polling(10)
